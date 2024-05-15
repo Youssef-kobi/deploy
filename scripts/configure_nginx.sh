@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Path to the .env file
-ENV_PATH="../.env"
+ENV_PATH=".env"
 DEFAULT_DEPLOYMENT_PATH="/var/www/html"
 
 # Colors for output
@@ -92,6 +92,21 @@ if [ $? -eq 0 ]; then
 else
     print_message $RED "Nginx configuration is invalid. Aborting."
     exit 1
+fi
+
+# Check if Nginx is running and start it if necessary
+print_message $YELLOW "Checking if Nginx is running..."
+if systemctl is-active --quiet nginx; then
+    print_message $GREEN "Nginx is running."
+else
+    print_message $YELLOW "Nginx is not running. Starting Nginx..."
+    sudo systemctl start nginx
+    if [ $? -eq 0 ]; then
+        print_message $GREEN "Nginx started successfully."
+    else
+        print_message $RED "Failed to start Nginx."
+        exit 1
+    fi
 fi
 
 # Reload Nginx to apply the changes
