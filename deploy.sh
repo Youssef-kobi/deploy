@@ -64,7 +64,8 @@ check_env_variables() {
     local required_vars=("GITHUB_REPO_URL" "GITHUB_ACCESS_TOKEN" "SERVER_NAME" "EMAIL_FOR_SSL" "PM2_CONFIG_PATH" "LOG_PATH")
 
     for var in "${required_vars[@]}"; do
-        value=$(grep "^${var}=" "$ENV_FILE" | cut -d'=' -f2-)
+        # Use grep to find the variable and cut to extract the value, removing potential surrounding whitespace
+        value=$(grep "^${var}=" "$ENV_FILE" | cut -d'=' -f2- | sed 's/^ *//;s/ *$//')
         if [ -z "$value" ]; then
             missing_vars+=($var)
         fi
