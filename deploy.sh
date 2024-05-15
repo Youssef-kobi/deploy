@@ -144,15 +144,15 @@ else
     exit 1
 fi
 
-# Run the SSL setup script
-# print_message $YELLOW "Running SSL setup script..."
-# "$SSL_SCRIPT"
-# if [ $? -eq 0 ]; then
-#     print_message $GREEN "SSL setup completed successfully."
-# else
-#     print_message $RED "SSL setup failed."
-#     exit 1
-# fi
+Run the SSL setup script
+print_message $YELLOW "Running SSL setup script..."
+"$SSL_SCRIPT"
+if [ $? -eq 0 ]; then
+    print_message $GREEN "SSL setup completed successfully."
+else
+    print_message $RED "SSL setup failed."
+    exit 1
+fi
 
 # # Run the build application script
 # print_message $YELLOW "Running build application script..."
