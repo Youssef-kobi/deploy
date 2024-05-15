@@ -6,6 +6,7 @@ SCRIPTS_DIR="$BASE_DIR/scripts"
 ENV_FILE="$BASE_DIR/.env"
 ENV_SCRIPT="$SCRIPTS_DIR/setup_env.sh"
 DEP_SCRIPT="$SCRIPTS_DIR/install_dependencies.sh"
+GITHUB_SCRIPT="$SCRIPTS_DIR/github_ops.sh"
 
 # Function to print colored messages
 print_message() {
@@ -120,6 +121,16 @@ fi
 
 print_message $GREEN "Initial part of deployment completed successfully. Ready for further steps."
 
-# Additional steps will be added here as we test and develop other scripts
+# Run the GitHub operations script
+print_message $YELLOW "Running GitHub operations script..."
+"$GITHUB_SCRIPT"
+if [ $? -eq 0 ]; then
+    print_message $GREEN "GitHub operations completed successfully."
+else
+    print_message $RED "GitHub operations failed."
+    exit 1
+fi
+
+print_message $GREEN "Deployment completed successfully."
 
 exit 0
