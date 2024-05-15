@@ -1,5 +1,4 @@
 #!/bin/bash
-#!/bin/bash
 
 # Path to the .env file
 ENV_PATH="../.env"
@@ -27,10 +26,10 @@ else
     exit 1
 fi
 
-# Ensure the necessary environment variables are set
+# Set NODE_ENV to production if not set
 if [ -z "$NODE_ENV" ]; then
-    print_message $RED "Error: NODE_ENV must be set in the .env file."
-    exit 1
+    NODE_ENV="production"
+    print_message $YELLOW "NODE_ENV is not set. Defaulting to production."
 fi
 
 # Change to the repository path
@@ -48,7 +47,7 @@ fi
 
 # Build the React application
 print_message $YELLOW "Building the React application..."
-npm run build
+NODE_ENV=$NODE_ENV npm run build
 if [ $? -eq 0 ]; then
     print_message $GREEN "React application built successfully."
 else
