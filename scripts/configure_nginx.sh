@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Path to the .env file
-ENV_PATH="../.env"
+ENV_PATH=".env"
 
 # Colors for output
 RED='\033[0;31m'
