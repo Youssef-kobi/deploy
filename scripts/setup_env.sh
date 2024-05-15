@@ -60,24 +60,12 @@ prompt_variable "GITHUB_REPO_URL" "Enter the GitHub repository URL"
 prompt_variable "GITHUB_ACCESS_TOKEN" "Enter the GitHub access token"
 
 print_title "Server Configuration"
-print_explanation "Specify the deployment path on your VM and the environment type (e.g., production, development)."
-prompt_variable "DEPLOYMENT_PATH" "Enter the deployment path (default: /var/www/myapp)"
-prompt_variable "NODE_ENV" "Enter the node environment (default: production)"
-
-print_title "Nginx Configuration"
-print_explanation "Provide the domain name for your application. Nginx paths will use default values."
+print_explanation "Provide the domain name for your application."
 prompt_variable "SERVER_NAME" "Enter the server name (domain)"
 
-# Use default paths for Nginx
-update_env "NGINX_SITES_AVAILABLE_PATH" "/etc/nginx/sites-available"
-update_env "NGINX_SITES_ENABLED_PATH" "/etc/nginx/sites-enabled"
-
 print_title "SSL Configuration"
-print_explanation "Specify the email for SSL certificate registration. The SSL certificate path will use a default value."
+print_explanation "Specify the email for SSL certificate registration."
 prompt_variable "EMAIL_FOR_SSL" "Enter the email for SSL certificate registration (Let's Encrypt)"
-
-# Use default path for SSL certificates
-update_env "SSL_CERT_PATH" "/etc/letsencrypt/live"
 
 print_title "PM2 Configuration"
 print_explanation "Provide the path to your PM2 ecosystem configuration file."
