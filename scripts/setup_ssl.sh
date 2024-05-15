@@ -43,7 +43,20 @@ if ! command -v certbot &> /dev/null; then
         exit 1
     fi
 else
-    print_message $GREEN "Certbot is already installed."
+    # Check if Certbot Nginx plugin is installed
+    if ! dpkg -l | grep -qw python3-certbot-nginx; then
+        print_message $RED "Certbot Nginx plugin is not installed. Installing Certbot Nginx plugin..."
+        sudo apt-get update
+        sudo apt-get install -y python3-certbot-nginx
+        if [ $? -eq 0 ]; then
+            print_message $GREEN "Certbot Nginx plugin installed successfully."
+        else
+            print_message $RED "Failed to install Certbot Nginx plugin."
+            exit 1
+        fi
+    else
+        print_message $GREEN "Certbot and Certbot Nginx plugin are already installed."
+    fi
 fi
 
 # Obtain SSL certificate using Certbot
