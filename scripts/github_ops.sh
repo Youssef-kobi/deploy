@@ -78,6 +78,4 @@ else
     fi
 fi
 
-print_message $GREEN "GitHub operations completed successfully."
-
 exit 0

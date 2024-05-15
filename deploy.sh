@@ -7,6 +7,9 @@ ENV_FILE="$BASE_DIR/.env"
 ENV_SCRIPT="$SCRIPTS_DIR/setup_env.sh"
 DEP_SCRIPT="$SCRIPTS_DIR/install_dependencies.sh"
 GITHUB_SCRIPT="$SCRIPTS_DIR/github_ops.sh"
+NGINX_SCRIPT="$SCRIPTS_DIR/configure_nginx.sh"
+SSL_SCRIPT="$SCRIPTS_DIR/setup_ssl.sh"
+BUILD_SCRIPT="$SCRIPTS_DIR/build_app.sh"
 
 # Function to print colored messages
 print_message() {
@@ -130,6 +133,36 @@ else
     print_message $RED "GitHub operations failed."
     exit 1
 fi
+
+# Run the Nginx configuration script
+print_message $YELLOW "Running Nginx configuration script..."
+"$NGINX_SCRIPT"
+if [ $? -eq 0 ]; then
+    print_message $GREEN "Nginx configuration completed successfully."
+else
+    print_message $RED "Nginx configuration failed."
+    exit 1
+fi
+
+# Run the SSL setup script
+# print_message $YELLOW "Running SSL setup script..."
+# "$SSL_SCRIPT"
+# if [ $? -eq 0 ]; then
+#     print_message $GREEN "SSL setup completed successfully."
+# else
+#     print_message $RED "SSL setup failed."
+#     exit 1
+# fi
+
+# # Run the build application script
+# print_message $YELLOW "Running build application script..."
+# "$BUILD_SCRIPT"
+# if [ $? -eq 0 ]; then
+#     print_message $GREEN "Application build completed successfully."
+# else
+#     print_message $RED "Application build failed."
+#     exit 1
+# fi
 
 print_message $GREEN "Deployment completed successfully."
 
