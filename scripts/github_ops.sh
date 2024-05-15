@@ -56,13 +56,26 @@ pull_repo() {
     fi
 }
 
-# Check if the repository already exists
+# Check if the directory is a Git repository
 if [ -d "$REPO_PATH/.git" ]; then
     print_message $BLUE "Repository already exists. Pulling the latest changes..."
     pull_repo
 else
-    print_message $BLUE "Repository does not exist. Cloning the repository..."
-    clone_repo
+    # If the directory is not empty, ask the user if they want to remove its contents
+    if [ "$(ls -A $REPO_PATH)" ]; then
+        print_message $RED "The destination path '$REPO_PATH' already exists and is not empty."
+        read -p "Do you want to remove the existing contents and clone the repository? (y/n): " remove_dir
+        if [ "$remove_dir" == "y" ]; then
+            print_message $YELLOW "Removing existing contents of '$REPO_PATH'..."
+            rm -rf "$REPO_PATH/*"
+            clone_repo
+        else
+            print_message $RED "Aborting the GitHub operations."
+            exit 1
+        fi
+    else
+        clone_repo
+    fi
 fi
 
 print_message $GREEN "GitHub operations completed successfully."
