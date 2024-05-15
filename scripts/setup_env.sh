@@ -67,7 +67,7 @@ prompt_variable "SERVER_NAME" "Enter the server name (domain)"
 
 print_title "SSL Configuration"
 print_explanation "Specify the email for SSL certificate registration."
-prompt_variable "EMAIL_FOR_SSL" "Enter the email for SSL certificate registration (Let's Encrypt)[pixair344@gmail.com]"
+prompt_variable "EMAIL_FOR_SSL" "Enter the email for SSL certificate registration (Let's Encrypt)"
 
 print_title "PM2 Configuration"
 print_explanation "Provide the path to your PM2 ecosystem configuration file."

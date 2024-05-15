@@ -75,7 +75,6 @@ check_env_variables() {
     echo "${missing_vars[@]}"
 }
 
-
 # Prompt to rerun the environment setup script
 print_message $YELLOW "Checking if environment setup script should be rerun..."
 read -p "Do you want to rerun the environment setup script to add or update values? (y/n): " rerun_env
