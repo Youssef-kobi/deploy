@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Path to the .env file
-ENV_PATH=".env"
+ENV_PATH="../.env"
+DEFAULT_DEPLOYMENT_PATH="/var/www/html"
 
 # Colors for output
 RED='\033[0;31m'
@@ -26,8 +27,8 @@ else
 fi
 
 # Ensure the required environment variables are set
-if [ -z "$SERVER_NAME" ] || [ -z "$DEPLOYMENT_PATH" ]; then
-    print_message $RED "Error: SERVER_NAME and DEPLOYMENT_PATH must be set in the .env file."
+if [ -z "$SERVER_NAME" ]; then
+    print_message $RED "Error: SERVER_NAME must be set in the .env file."
     exit 1
 fi
 
@@ -43,7 +44,7 @@ server {
     listen 80;
     server_name $SERVER_NAME;
 
-    root $DEPLOYMENT_PATH/build;
+    root $DEFAULT_DEPLOYMENT_PATH/build;
     index index.html;
 
     location / {
