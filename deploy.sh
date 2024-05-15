@@ -5,6 +5,7 @@ BASE_DIR="$(dirname "$0")"
 SCRIPTS_DIR="$BASE_DIR/scripts"
 ENV_FILE="$BASE_DIR/.env"
 ENV_SCRIPT="$SCRIPTS_DIR/setup_env.sh"
+DEP_SCRIPT="$SCRIPTS_DIR/install_dependencies.sh"
 
 # Function to print colored messages
 print_message() {
@@ -21,6 +22,16 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 
 print_message $BLUE "Starting Deployment Process..."
+
+# Run the dependencies installation script
+print_message $YELLOW "Checking and installing necessary dependencies..."
+"$DEP_SCRIPT"
+if [ $? -eq 0 ]; then
+    print_message $GREEN "Dependencies are installed successfully."
+else
+    print_message $RED "Failed to install dependencies."
+    exit 1
+fi
 
 # Verify if scripts are executable
 print_message $YELLOW "Verifying scripts in the scripts directory..."
@@ -48,7 +59,7 @@ fi
 # Function to check environment variables
 check_env_variables() {
     local missing_vars=()
-    local required_vars=("GITHUB_REPO_URL" "GITHUB_ACCESS_TOKEN" "DEPLOYMENT_PATH" "NODE_ENV" "SERVER_NAME" "EMAIL_FOR_SSL" "PM2_CONFIG_PATH" "LOG_PATH")
+    local required_vars=("GITHUB_REPO_URL" "GITHUB_ACCESS_TOKEN" "SERVER_NAME" "EMAIL_FOR_SSL" "PM2_CONFIG_PATH" "LOG_PATH")
 
     for var in "${required_vars[@]}"; do
         value=$(grep "^${var}=" "$ENV_FILE" | cut -d'=' -f2-)
