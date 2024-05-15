@@ -144,7 +144,7 @@ else
     exit 1
 fi
 
-Run the SSL setup script
+#Run the SSL setup script
 print_message $YELLOW "Running SSL setup script..."
 "$SSL_SCRIPT"
 if [ $? -eq 0 ]; then

@@ -2,8 +2,6 @@
 
 # Path to the .env file
 ENV_PATH=".env"
-NGINX_CONF_PATH="/etc/nginx/sites-available"
-NGINX_ENABLED_PATH="/etc/nginx/sites-enabled"
 
 # Colors for output
 RED='\033[0;31m'
@@ -33,69 +31,73 @@ if [ -z "$SERVER_NAME" ] || [ -z "$EMAIL_FOR_SSL" ]; then
     exit 1
 fi
 
-# Function to check if certbot is installed
-is_certbot_installed() {
-    if ! command -v certbot &> /dev/null; then
-        return 1
-    else
-        return 0
-    fi
-}
-
-# Install certbot if not installed
-if ! is_certbot_installed; then
-    print_message $YELLOW "Certbot is not installed. Installing certbot..."
+# Check if Certbot is installed
+if ! command -v certbot &> /dev/null; then
+    print_message $RED "Certbot is not installed. Installing Certbot..."
     sudo apt-get update
     sudo apt-get install -y certbot python3-certbot-nginx
     if [ $? -eq 0 ]; then
         print_message $GREEN "Certbot installed successfully."
     else
-        print_message $RED "Failed to install certbot."
+        print_message $RED "Failed to install Certbot."
         exit 1
     fi
 else
     print_message $GREEN "Certbot is already installed."
 fi
 
-# Function to obtain and install SSL certificate
-obtain_ssl_certificate() {
-    print_message $YELLOW "Obtaining SSL certificate for $SERVER_NAME..."
-    sudo certbot --nginx -d "$SERVER_NAME" --non-interactive --agree-tos --email "$EMAIL_FOR_SSL"
-    if [ $? -eq 0 ]; then
-        print_message $GREEN "SSL certificate obtained and configured successfully."
-    else
-        print_message $RED "Failed to obtain SSL certificate."
-        exit 1
-    fi
-}
-
-# Check if SSL certificate is already configured
-if sudo certbot certificates | grep -q "$SERVER_NAME"; then
-    print_message $GREEN "SSL certificate for $SERVER_NAME is already configured."
+# Obtain SSL certificate using Certbot
+print_message $YELLOW "Obtaining SSL certificate for $SERVER_NAME..."
+sudo certbot --nginx -d "$SERVER_NAME" --non-interactive --agree-tos --email "$EMAIL_FOR_SSL"
+if [ $? -eq 0 ]; then
+    print_message $GREEN "SSL certificate obtained successfully."
 else
-    obtain_ssl_certificate
+    print_message $RED "Failed to obtain SSL certificate."
+    exit 1
 fi
 
-# Function to setup cron job for automatic renewal
-setup_renewal_cron() {
-    print_message $YELLOW "Setting up cron job for automatic SSL certificate renewal..."
-    cron_job="0 0,12 * * * /usr/bin/certbot renew --quiet --deploy-hook 'systemctl reload nginx'"
-    (sudo crontab -l 2>/dev/null; echo "$cron_job") | sudo crontab -
+# Verify if Certbot renewal cron job is set up
+print_message $YELLOW "Checking for Certbot renewal cron job..."
+if ! sudo crontab -l | grep -q "certbot renew"; then
+    print_message $YELLOW "Setting up Certbot renewal cron job..."
+    (sudo crontab -l 2>/dev/null; echo "0 0,12 * * * certbot renew --quiet --deploy-hook 'systemctl reload nginx'") | sudo crontab -
     if [ $? -eq 0 ]; then
-        print_message $GREEN "Cron job for automatic SSL certificate renewal set up successfully."
+        print_message $GREEN "Certbot renewal cron job set up successfully."
     else
-        print_message $RED "Failed to set up cron job for SSL certificate renewal."
+        print_message $RED "Failed to set up Certbot renewal cron job."
         exit 1
     fi
-}
-
-# Set up the cron job if not already set
-if sudo crontab -l | grep -q 'certbot renew'; then
-    print_message $GREEN "Cron job for SSL certificate renewal already set up."
 else
-    setup_renewal_cron
+    print_message $GREEN "Certbot renewal cron job is already set up."
 fi
 
-print_message $GREEN "SSL setup for $SERVER_NAME completed successfully."
+# Check if Nginx is running and start it if necessary
+print_message $YELLOW "Checking if Nginx is running..."
+if systemctl is-active --quiet nginx; then
+    print_message $GREEN "Nginx is running."
+else
+    print_message $YELLOW "Nginx is not running. Starting Nginx..."
+    sudo systemctl start nginx
+    if [ $? -eq 0 ]; then
+        print_message $GREEN "Nginx started successfully."
+    else
+        print_message $RED "Failed to start Nginx. Gathering diagnostic information..."
+        sudo systemctl status nginx.service
+        sudo journalctl -xe
+        exit 1
+    fi
+fi
+
+# Reload Nginx to apply the changes
+print_message $YELLOW "Reloading Nginx to apply the SSL changes..."
+sudo systemctl reload nginx
+if [ $? -eq 0 ]; then
+    print_message $GREEN "Nginx reloaded successfully."
+else
+    print_message $RED "Failed to reload Nginx."
+    exit 1
+fi
+
+print_message $GREEN "SSL setup and configuration for $SERVER_NAME completed successfully."
 
 exit 0
