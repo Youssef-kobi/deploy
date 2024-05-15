@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Path to the .env file
-ENV_PATH="../.env"
+ENV_PATH=".env"
 REPO_PATH="/var/www/html" # Default Nginx web root directory
 
 # Colors for output
