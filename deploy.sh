@@ -66,6 +66,7 @@ check_env_variables() {
     for var in "${required_vars[@]}"; do
         # Use grep to find the variable and cut to extract the value, removing potential surrounding whitespace
         value=$(grep "^${var}=" "$ENV_FILE" | cut -d'=' -f2- | sed 's/^ *//;s/ *$//')
+        echo "DEBUG: Checking variable $var with value '$value'"  # Debug output
         if [ -z "$value" ]; then
             missing_vars+=($var)
         fi
@@ -73,6 +74,7 @@ check_env_variables() {
 
     echo "${missing_vars[@]}"
 }
+
 
 # Prompt to rerun the environment setup script
 print_message $YELLOW "Checking if environment setup script should be rerun..."
