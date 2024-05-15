@@ -36,8 +36,8 @@ fi
 cd "$REPO_PATH" || { print_message $RED "Repository path not found."; exit 1; }
 
 # Install dependencies
-print_message $YELLOW "Installing project dependencies..."
-npm install
+print_message $YELLOW "Installing project dependencies with yarn..."
+yarn install
 if [ $? -eq 0 ]; then
     print_message $GREEN "Dependencies installed successfully."
 else
@@ -46,8 +46,8 @@ else
 fi
 
 # Build the React application
-print_message $YELLOW "Building the React application..."
-NODE_ENV=$NODE_ENV npm run build
+print_message $YELLOW "Building the React application with yarn..."
+NODE_ENV=$NODE_ENV yarn build
 if [ $? -eq 0 ]; then
     print_message $GREEN "React application built successfully."
 else
