@@ -46,8 +46,8 @@ else
 fi
 
 # Build the React application
-print_message $YELLOW "Building the React application with yarn..."
-NODE_ENV=$NODE_ENV yarn build
+print_message $YELLOW "Building the React application with increased memory limit..."
+NODE_OPTIONS="--max-old-space-size=4096" NODE_ENV=$NODE_ENV yarn build
 if [ $? -eq 0 ]; then
     print_message $GREEN "React application built successfully."
 else
