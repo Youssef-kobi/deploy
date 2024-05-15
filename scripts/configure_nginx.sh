@@ -104,7 +104,9 @@ else
     if [ $? -eq 0 ]; then
         print_message $GREEN "Nginx started successfully."
     else
-        print_message $RED "Failed to start Nginx."
+        print_message $RED "Failed to start Nginx. Gathering diagnostic information..."
+        sudo systemctl status nginx.service
+        sudo journalctl -xe
         exit 1
     fi
 fi
