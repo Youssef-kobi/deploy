@@ -23,15 +23,7 @@ YELLOW='\033[1;33m'
 
 print_message $BLUE "Starting Deployment Process..."
 
-# Run the dependencies installation script
-print_message $YELLOW "Checking and installing necessary dependencies..."
-"$DEP_SCRIPT"
-if [ $? -eq 0 ]; then
-    print_message $GREEN "Dependencies are installed successfully."
-else
-    print_message $RED "Failed to install dependencies."
-    exit 1
-fi
+
 
 # Verify if scripts are executable
 print_message $YELLOW "Verifying scripts in the scripts directory..."
@@ -54,6 +46,16 @@ else
         print_message $RED "Failed to make scripts executable."
         exit 1
     fi
+fi
+
+# Run the dependencies installation script
+print_message $YELLOW "Checking and installing necessary dependencies..."
+"$DEP_SCRIPT"
+if [ $? -eq 0 ]; then
+    print_message $GREEN "Dependencies are installed successfully."
+else
+    print_message $RED "Failed to install dependencies."
+    exit 1
 fi
 
 # Function to check environment variables
