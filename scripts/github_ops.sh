@@ -67,7 +67,7 @@ else
         read -p "Do you want to remove the existing contents and clone the repository? (y/n): " remove_dir
         if [ "$remove_dir" == "y" ]; then
             print_message $YELLOW "Removing existing contents of '$REPO_PATH'..."
-            rm -rf "$REPO_PATH/*"
+            rm -rf "$REPO_PATH"/* "$REPO_PATH"/.* 2>/dev/null
             clone_repo
         else
             print_message $RED "Aborting the GitHub operations."
