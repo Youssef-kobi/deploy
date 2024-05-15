@@ -24,10 +24,12 @@ print_explanation() {
 update_env() {
     local var_name=$1
     local var_value=$2
+    # Escape special characters in var_value for sed
+    local escaped_value=$(echo "$var_value" | sed -e 's/[\/&]/\\&/g')
     # Check if the variable already exists
     if grep -q "^${var_name}=" "$ENV_PATH"; then
         # Variable exists, replace it
-        sed -i "s/^${var_name}=.*/${var_name}=${var_value}/" "$ENV_PATH"
+        sed -i "s/^${var_name}=.*/${var_name}=${escaped_value}/" "$ENV_PATH"
     else
         # Variable does not exist, add it
         echo "${var_name}=${var_value}" >> "$ENV_PATH"
@@ -41,7 +43,7 @@ prompt_variable() {
     local current_value=$(grep "^${var_name}=" "$ENV_PATH" | cut -d'=' -f2-)
     read -p "${prompt_message} [${current_value}]: " input_value
     input_value=${input_value:-$current_value} # Default to current value if empty
-    update_env $var_name $input_value
+    update_env $var_name "$input_value"
 }
 
 # Ensure .env file exists or create a new one if not
